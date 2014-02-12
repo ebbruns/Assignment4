@@ -42,10 +42,16 @@ public class Calculator
   public static Fraction eval0(String input)
     throws Exception
   {
-    boolean storeMode = false;
-    boolean noSkip = true;
-    boolean isNegative = false;
-    boolean hasValue = false;
+    boolean isFrac = false; // true when value is a fraction (only used in
+                            // special cases)
+    boolean storeMode = false; // true when value is being stored to the
+                               // register
+    boolean noSkip = true; // true when parts of the program shouldn't be
+                           // skipped (only false in special cases)
+    boolean isNegative = false; // true when the number we are dealing with is
+                                // negative
+    boolean hasValue = false; // true when we already have a fractional value
+                              // (only true in special cases)
 
     input = input.trim();
     StringBuilder fractionNum = new StringBuilder();
@@ -68,11 +74,12 @@ public class Calculator
       {
         regSpot = input.charAt(i + 1) - '0';
 
-        if (input.charAt(i + 3) == '=')
+        if (i + 3 < input.length() && input.charAt(i + 3) == '=')
           {
             storeMode = true;
             i += 5;
           }// if
+
         else
           // checks for call to register
           {
@@ -90,7 +97,10 @@ public class Calculator
             frac1.setFrac(register[regSpot].numerator,
                           register[regSpot].denominator);
             noSkip = false;
-            i += 2;
+            if (i + 2 < input.length())
+              {
+                i += 2;
+              }
             hasValue = true;
           }// else
       }
@@ -133,6 +143,7 @@ public class Calculator
       {
         if (input.charAt(i) == '/')
           {
+            isFrac = true;
             i++;
             while (i < input.length() && Character.isDigit(input.charAt(i)))
               {
@@ -162,14 +173,31 @@ public class Calculator
           }// else
       }// if
 
+    if (i >= input.length() && !isFrac)
+      {
+        frac1.setFrac(Integer.valueOf(fractionNum.toString()), 1);
+      }
     if (isNegative)
       {
         frac1.numerator *= -1;
+        if (i >= input.length())
+          {
+            return frac1;
+          }
       }
 
     noSkip = true; // Resets some boolean values
     isNegative = false;
     hasValue = false;
+    if (i >= input.length())
+      {
+        if (isFrac)
+          {
+            return frac1;
+          }
+        frac1.setFrac(Integer.valueOf(fractionNum.toString()), 1);
+        return frac1;
+      }
     while (i < input.length())
       {
         fractionNum.setLength(0); // Resets numerator and denominator to use
@@ -332,7 +360,8 @@ public class Calculator
   public static void main(String[] args)
     throws Exception
   {
-    eval0("3 * 4/3");
+    register[0] = new Fraction(2, 1);
+    eval0("r0 * r0");
   }// main
 
 }// Calculator

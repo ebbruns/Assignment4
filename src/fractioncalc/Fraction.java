@@ -47,14 +47,14 @@ public class Fraction
   /**
    * Get the numerator of this rational number. (Observer)
    */
-  
+
   public void setFrac(int num, int denom)
   {
     this.numerator = num;
     this.denominator = denom;
     this.simplify();
   }
-  
+
   public int numerator()
   {
     return this.numerator;
@@ -74,7 +74,8 @@ public class Fraction
    */
   public void simplify()
   {
-    if ((this.numerator < 0 && this.denominator < 0) || (this.numerator >= 0 && this.denominator < 0))
+    if ((this.numerator < 0 && this.denominator < 0)
+        || (this.numerator >= 0 && this.denominator < 0))
       {
         this.scale(-1);
       }
@@ -83,8 +84,7 @@ public class Fraction
     int gcd = bigNum.gcd(bigDenom).intValue();
     this.numerator = this.numerator / gcd;
     this.denominator = this.denominator / gcd;
-    
-    
+
   } // simplify
 
   /**
@@ -113,7 +113,7 @@ public class Fraction
     int tempNum;
     tempNum = rational.numerator * this.denominator;
     this.denominator = this.denominator * rational.denominator;
-    this.numerator = this.numerator * rational.denominator;   
+    this.numerator = this.numerator * rational.denominator;
     this.numerator += tempNum;
     this.simplify();
   }
